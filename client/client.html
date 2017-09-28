@@ -7,6 +7,167 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
 
+   const parseJSON = (xhr, content) => {
+      //parse response (obj will be empty in a 204 updated)
+      const obj = JSON.parse(xhr.response);
+      console.dir(obj);
+      
+      //if message in response, add to screen
+      if(obj.message) {
+        const p = document.createElement('p');
+        p.textContent = `Message: ${obj.message}`;
+        content.appendChild(p);
+      }
+      
+      //if users in response, add to screen
+      if(obj.users) {
+        const userList = document.createElement('p');
+        const users = JSON.stringify(obj.users);
+        userList.textContent = users;
+        content.appendChild(userList);
+      }
+    };
+
+  
+const handleResponse = (xhr,parseResponse) => {
+      const content = document.querySelector('#content');
+      
+      console.log(xhr.getResponseHeader ('etag'));
+      
+      //Check network tag for real status code
+      console.log(xhr.status);
+      
+      //depending on which headers are used
+      //The browser will either re-fire a 200 or will show a 304.
+      switch(xhr.status) {
+        case 200: //if success
+          content.innerHTML = `<b>Success</b>`;
+          break;
+        case 201: //if created
+          content.innerHTML = '<b>Create</b>';
+          break;
+        case 304: //if not modified
+          content.innerHTML = '<b>Not Modified</b>';
+          break;
+        case 400: //if bad request
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 404: //if not found
+          content.innerHTML = `<b>Resource Not Found</b>`;
+          break;
+        default: //any other status
+          content.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+  
+        if(parseResponse) {
+        //parse the object and print it
+        const obj = JSON.parse(xhr.response);
+        console.dir(obj);
+      } else {
+        console.log('received');
+      }
+  
+  parseJSON(xhr,content);
+};
+
+  const sendPost = (e,nameForm) =>{
+      const nameAction = nameForm.getAttribute('action');
+      const nameMethod = nameForm.getAttribute('method');
+
+      const nameField = nameForm.querySelector('#nameField');
+      const ageField = nameForm.querySelector('#ageField');
+
+      //create new async. AJAX request
+      const xhr = new XMLHttpRequest();
+      xhr.open(nameMethod,nameAction);
+
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      //set requested response type for possible JSON response
+      xhr.setRequestHeader ('Accept', 'application/json');
+
+      //set function to handle the response
+      xhr.onload = () => handleResponse(xhr);
+
+      const formData = `name=${nameField.value}&age=${ageField.value}`;
+
+      //send request with the data
+      xhr.send(formData);
+
+      //prevent the browser's default action (to send the form on its own)
+      e.preventDefault();
+      //return false to prevent the browser from trying to change page
+      return false;
+  };
+
+   const sendAjax = (url) => {
+      //create a new xhr (ajax) request. 
+      const xhr = new XMLHttpRequest();
+      //set the xhr to a GET request to a certain URL
+      xhr.open('GET', url);
+      xhr.setRequestHeader ("Accept", 'application/json');
+
+      //When the xhr loads, call handleResponse and pass the xhr object
+      xhr.onload = () => handleResponse(xhr);
+
+      //send ajax request to the server
+      xhr.send();
+    };
+
+ //function to send request
+    const requestUpdate = (e, userForm) => {
+      //grab url field 
+      const url = userForm.querySelector('#urlField').value;
+      //grab method selected
+      const method = userForm.querySelector('#methodSelect').value;
+      
+      //create a new AJAX request (asynchronous)
+      const xhr = new XMLHttpRequest();
+      //setup connect using the selected method and url
+      xhr.open(method, url);
+
+      //but you can send many, separated by commas.
+      xhr.setRequestHeader('Accept', 'application/json');
+      //if get request or head request
+      if(method == 'get') {
+        //set onload to parse request and get json message
+        xhr.onload = () => handleResponse(xhr, true);
+      } else {
+        //set onload to check meta data and NOT message
+        //There are no body responses in a head request
+        xhr.onload = () => handleResponse(xhr, false);
+      }
+      
+      //send ajax request
+      xhr.send();
+      
+      //cancel browser's default action
+      e.preventDefault();
+      //return false to prevent page redirection from a form
+      return false;
+    };
+
+  const init = () =>{
+  
+    const success = () => sendAjax('/success');
+      const badRequest = () => sendAjax('/badRequest');
+      const notImp = () => sendAjax('/notImplemented');
+      const unAuth = () => sendAjax('/unauthorized');
+      const forbidden = () => sendAjax('/forbidden');
+    const internal = () => sendAjax('/internal');
+    
+    const notReal = () => sendAjax('/notReal');
+    const getUser = () => sendAjax('/getUser');
+    const addUser = () => sendAjax('/addUser');
+    
+    const nameForm = document.querySelector("#nameForm");
+    const userForm = document.querySelector("#userForm");
+    
+    nameForm.addEventListener('submit',addUser);    
+  }
+  
+  window.onload = init;
+
   </script>
 </head>
 <body>
@@ -32,6 +193,9 @@
     </form>
   </section>
   <section id="content">
+      <div id = "id">12</div>
+      <br>
+      <div id= "message"></div>
   </section>
 </body>
 </html>
