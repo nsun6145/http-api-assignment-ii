@@ -18,12 +18,14 @@ const getIndex = (request, response) => {
   response.end();
 };
 
+// gets css
 const getStyle = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/css' });
   response.write(style);
   response.end();
 };
 
+// takes request, response, status code, and object to send
 const respondJSON = (request, response, status, object) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -36,6 +38,7 @@ const respondJSON = (request, response, status, object) => {
   response.end();
 };
 
+// Does the same as the aforemented above, without the JSON body
 const respondJSONMeta = (request, response, status) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -46,6 +49,7 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
+// return user object as JSON
 const getUsers = (request, response) => {
   const responseJSON = {
     users,
@@ -111,75 +115,12 @@ const notReal = (request, response) => {
   respondJSON(request, response, 404, responseJSON);
 };
 
-  // Forbidden
-const forbidden = (request, response) => {
-  const responseJSON = {
-    message: 'You do not have access to this content.',
-    id: 'forbidden',
-  };
-  respondJSON(request, response, 403, responseJSON);
-};
-
-  // Not Implemented
-const notImp = (request, response) => {
-  const responseJSON = {
-    message: 'A get request for this page has not been implemented yet. Check back later',
-    id: 'notImplemented',
-  };
-  respondJSON(request, response, 501, responseJSON);
-};
-
-  // Internal Error
-const internal = (request, response) => {
-  const responseJSON = {
-    message: 'Internal Server Error. Something went wrong.',
-    id: 'internalError',
-  };
-  respondJSON(request, response, 500, responseJSON);
-};
-
-  // Unauthorized
-const unAuth = (request, response, params) => {
-  const responseJSON = {
-    message: 'You are authorized',
-    id: 'unauthorized',
-  };
-
-  if (!params.loggedIn || params.loggedIn !== 'true') {
-    responseJSON.message = 'You are not authorized';
-    responseJSON.id = 'Unauthorized';
-    return respondJSON(request, response, 401, responseJSON);
-  }
-
-  return respondJSON(request, response, 200, responseJSON);
-};
-
-const badRequest = (request, response, params) => {
-  // message to send
-
-  const responseJSON = {
-    message: 'This request has the required parameters',
-    id: 'badRequest',
-  };
-
-  if (!params.valid || params.valid !== 'true') {
-    // set our error message
-    responseJSON.message = 'Missing valid query parameter set to true';
-    // give the error a consistent id 
-    responseJSON.id = 'badRequest';
-    // return our json with a 400 bad request code
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  return respondJSON(request, response, 200, responseJSON);
-};
 
 // function for 404 not found without message
 const notRealMeta = (request, response) => {
   // return a 404 without an error message
   respondJSONMeta(request, response, 404);
 };
-
 
 const getUsersMeta = (request, response) => {
   if (request.headers['if-none-match'] === digest) {
@@ -193,13 +134,8 @@ const getUsersMeta = (request, response) => {
   // exports to set functions to public.
 module.exports = {
   success,
-  badRequest,
   notReal,
   notRealMeta,
-  forbidden,
-  notImp,
-  unAuth,
-  internal,
   getUsers,
   getUsersMeta,
   addUser,

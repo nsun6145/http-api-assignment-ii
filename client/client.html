@@ -46,8 +46,9 @@ const handleResponse = (xhr,parseResponse) => {
         case 201: //if created
           content.innerHTML = '<b>Create</b>';
           break;
-        case 204:
-          content.innerHTML= '<b>Updated</b>'; 
+        case 204: //if updated
+          content.innerHTML= '<b>Updated</b>';
+          break;
         case 304: //if not modified
           content.innerHTML = '<b>Not Modified</b>';
           break;
@@ -62,7 +63,8 @@ const handleResponse = (xhr,parseResponse) => {
           break;
       }
   
-        if(parseResponse) {
+      //if expecting a response body (that's not in a 304 or head request)...
+        if(parseResponse && parseResponse != 'HEAD') {
         //parse the object and print it
         const obj = JSON.parse(xhr.response);
         console.dir(obj);
@@ -73,6 +75,7 @@ const handleResponse = (xhr,parseResponse) => {
   parseJSON(xhr,content);
 };
 
+  //sends post requests
   const sendPost = (e,nameForm) =>{
       const nameAction = nameForm.getAttribute('action');
       const nameMethod = nameForm.getAttribute('method');
@@ -152,18 +155,6 @@ const handleResponse = (xhr,parseResponse) => {
   
 
   const init = () =>{
-  /*
-    const success = () => sendAjax('/success');
-      const badRequest = () => sendAjax('/badRequest');
-      const notImp = () => sendAjax('/notImplemented');
-      const unAuth = () => sendAjax('/unauthorized');
-      const forbidden = () => sendAjax('/forbidden');
-    const internal = () => sendAjax('/internal');
-    
-    */
- 
-    //const addUser = () => sendAjax('/addUser');
-    
     const nameForm = document.querySelector("#nameForm");
     const userForm = document.querySelector("#userForm");
     

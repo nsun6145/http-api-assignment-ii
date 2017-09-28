@@ -14,19 +14,6 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 // handle HTTP requests. In node the HTTP server will automatically
 // send this function request and pre-filled response objects.
 
-// handles GET requests
-/*
-const handleGet = (request, response, parsedUrl) => {
-  // route to correct method based on url
-  if (parsedUrl.pathname === '/style.css') {
-    handler.getStyle(request, response);
-  } else if (parsedUrl.pathname === '/getUsers') {
-    handler.getUsers(request, response);
-  } else {
-    handler.getIndex(request, response);
-  }
-};
-*/
 // handles POST requests
 const handlePost = (request, response, parsedUrl) => {
   // if post is to /addUser (our only POST url)
