@@ -10,21 +10,12 @@ const handler = require('./responses.js');
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 // key:value object to look up URL routes to specific functions
-/*
-const urlStruct = {
-  '/': handler.getIndex,
-  '/style.css': handler.getStyle,
-  '/getUsers': handler.getUsers,
-  '/notReal': handler.notReal,
-  '/addUser': handler.addUser,
-
-};
-*/
 
 // handle HTTP requests. In node the HTTP server will automatically
 // send this function request and pre-filled response objects.
 
 // handles GET requests
+/*
 const handleGet = (request, response, parsedUrl) => {
   // route to correct method based on url
   if (parsedUrl.pathname === '/style.css') {
@@ -35,7 +26,7 @@ const handleGet = (request, response, parsedUrl) => {
     handler.getIndex(request, response);
   }
 };
-
+*/
 // handles POST requests
 const handlePost = (request, response, parsedUrl) => {
   // if post is to /addUser (our only POST url)
@@ -74,63 +65,59 @@ const onRequest = (request, response) => {
   // check if the path name (the /name part of the url) matches 
   console.log(parsedUrl);
 
-
-  switch (request.method) {
-    case 'GET':
-      // handleGet(request, response, parsedUrl);
-      if (parsedUrl.pathname === '/') {
-        // if homepage, send index
-        handler.getIndex(request, response);
-      } else if (parsedUrl.pathname === '/style.css') {
-      // if stylesheet, send stylesheet
-        handler.getStyle(request, response);
-      } else if (parsedUrl.pathname === '/getUsers') {
-        // if get users, send user object back
-        handler.getUsers(request, response);
-      } else if (parsedUrl.pathname === '/notReal') {
-        // if get users, send user object back
-        handler.notReal(request, response);
-      } else {
-        // if not found, send 404 message
-        handler.notReal(request, response);
-      }
-      break;
-
-    case 'HEAD':
-      if (parsedUrl.pathname === '/getUsers') {
-        // if get users, send user object back
-        handler.getUsersMeta(request, response);
-      } else if (parsedUrl.pathname === '/notReal') {
-        // if get users, send user object back
-        handler.notRealMeta(request, response);
-      } else {
-        // if not found, send 404 message
-        handler.notReal(request, response);
-      }
-      break;
-
-    case 'POST':
-      // handlePost(request, response, parsedUrl);
-      if (parsedUrl.pathname === '/addUsers') {
-        // if get users, send user object back
-        handler.addUsers(request, response);
-      } else {
-        // if not found, send 404 message
-        handler.notReal(request, response);
-      }
-      break;
-
-    default:
-
-      // handler.notReal(request,response);
-  }
-  /*
-if (request.method === 'POST') {
+  if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);
   } else {
-    handleGet(request, response, parsedUrl);
+    switch (request.method) {
+      case 'GET':
+      // handleGet(request, response, parsedUrl);
+        if (parsedUrl.pathname === '/') {
+        // if homepage, send index
+          handler.getIndex(request, response);
+        } else if (parsedUrl.pathname === '/style.css') {
+        // if stylesheet, send stylesheet
+          handler.getStyle(request, response);
+        } else if (parsedUrl.pathname === '/getUsers') {
+        // if get users, send user object back
+          handler.getUsers(request, response);
+        } else if (parsedUrl.pathname === '/notReal') {
+        // if get users, send user object back
+          handler.notReal(request, response);
+        } else {
+        // if not found, send 404 message
+          handler.notReal(request, response);
+        }
+        break;
+
+      case 'HEAD':
+        if (parsedUrl.pathname === '/getUsers') {
+        // if get users, send user object back
+          handler.getUsersMeta(request, response);
+        } else if (parsedUrl.pathname === '/notReal') {
+        // if get users, send user object back
+          handler.notRealMeta(request, response);
+        } else {
+        // if not found, send 404 message
+          handler.notReal(request, response);
+        }
+        break;
+
+      case 'POST':
+      // handlePost(request, response, parsedUrl);
+        if (parsedUrl.pathname === '/addUsers') {
+        // if get users, send user object back
+          handler.addUsers(request, response);
+        } else {
+        // if not found, send 404 message
+          handler.notReal(request, response);
+        }
+        break;
+
+      default:
+
+      // handler.notReal(request,response);
+    }
   }
-*/
 };
 
 

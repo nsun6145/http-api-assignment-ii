@@ -50,11 +50,12 @@ const getUsers = (request, response) => {
   const responseJSON = {
     users,
   };
+  /*
   if (request.headers['if-none-match'] === digest) {
     // return 304 response without message 
     return respondJSONMeta(request, response, 304);
   }
-
+*/
   return respondJSON(request, response, 200, responseJSON);
 };
 
@@ -65,6 +66,7 @@ const addUser = (request, response, body) => {
 
   if (!body.name || !body.age) {
     responseJSON.id = 'missingParams';
+    return respondJSON(request, response, 400, responseJSON);
   }
 
   let responseCode = 201;
@@ -80,7 +82,7 @@ const addUser = (request, response, body) => {
   users[body.name].age = body.age;
 
   if (responseCode === 201) {
-    responseJSON.message = 'Created Successfully';
+    responseJSON.message = `Name: ${users[body.name].name} , Age: ${users[body.name].age}`;
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
@@ -98,11 +100,11 @@ const success = (request, response) => {
   respondJSON(request, response, 200, responseJSON);
 };
 
-const notFound = (request, response) => {
+const notReal = (request, response) => {
   // error message with a description and consistent error id
   const responseJSON = {
     message: 'The page you are looking for was not found.',
-    id: 'notFound',
+    id: 'notReal',
   };
 
     // return our json with a 404 not found error code
@@ -173,24 +175,27 @@ const badRequest = (request, response, params) => {
 };
 
 // function for 404 not found without message
-const notFoundMeta = (request, response) => {
-  //return a 404 without an error message
+const notRealMeta = (request, response) => {
+  // return a 404 without an error message
   respondJSONMeta(request, response, 404);
 };
-const getUsersMeta = (request,response) =>{
+
+
+const getUsersMeta = (request, response) => {
   if (request.headers['if-none-match'] === digest) {
     return respondJSONMeta(request, response, 304);
   }
 
-  //return 200 without message, just the meta data
+  // return 200 without message, just the meta data
   return respondJSONMeta(request, response, 200);
 };
+
   // exports to set functions to public.
 module.exports = {
   success,
   badRequest,
-  notFound,
-  notFoundMeta,
+  notReal,
+  notRealMeta,
   forbidden,
   notImp,
   unAuth,

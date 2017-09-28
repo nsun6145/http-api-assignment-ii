@@ -15,7 +15,7 @@
       //if message in response, add to screen
       if(obj.message) {
         const p = document.createElement('p');
-        p.textContent = `Message: ${obj.message}`;
+        p.textContent = `${obj.message}`;
         content.appendChild(p);
       }
       
@@ -46,6 +46,8 @@ const handleResponse = (xhr,parseResponse) => {
         case 201: //if created
           content.innerHTML = '<b>Create</b>';
           break;
+        case 204:
+          content.innerHTML= '<b>Updated</b>'; 
         case 304: //if not modified
           content.innerHTML = '<b>Not Modified</b>';
           break;
@@ -147,8 +149,10 @@ const handleResponse = (xhr,parseResponse) => {
       return false;
     };
 
-  const init = () =>{
   
+
+  const init = () =>{
+  /*
     const success = () => sendAjax('/success');
       const badRequest = () => sendAjax('/badRequest');
       const notImp = () => sendAjax('/notImplemented');
@@ -156,14 +160,19 @@ const handleResponse = (xhr,parseResponse) => {
       const forbidden = () => sendAjax('/forbidden');
     const internal = () => sendAjax('/internal');
     
-    const notReal = () => sendAjax('/notReal');
-    const getUser = () => sendAjax('/getUser');
-    const addUser = () => sendAjax('/addUser');
+    */
+ 
+    //const addUser = () => sendAjax('/addUser');
     
     const nameForm = document.querySelector("#nameForm");
     const userForm = document.querySelector("#userForm");
     
-    nameForm.addEventListener('submit',addUser);    
+    const notReal = () => sendAjax('/notReal');
+    const getUsers = (e) => requestUpdate(e,userForm);
+    
+    const addUser = (e) => sendPost(e,nameForm);
+    nameForm.addEventListener('submit',addUser);
+    userForm.addEventListener('submit', getUsers);
   }
   
   window.onload = init;
@@ -189,7 +198,7 @@ const handleResponse = (xhr,parseResponse) => {
         <option value="get">GET</option>
         <option value="head">HEAD</option>
       </select>
-      <input type="submit" value="Get User" />
+      <input type="submit" value="Send" />
     </form>
   </section>
   <section id="content">
